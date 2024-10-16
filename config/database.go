@@ -1,10 +1,11 @@
 package database
 
 import (
+	"denis/first/helpers"
 	"fmt"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"denis/first/helpers"
 )
 
 var DB *gorm.DB

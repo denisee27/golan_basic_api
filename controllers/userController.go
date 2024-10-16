@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -39,6 +40,12 @@ func (ctrl *UserController) CreateUser(req *gin.Context) {
 		})
 		return
 	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Data.Password), bcrypt.DefaultCost)
+	if err != nil {
+		req.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		return
+	}
+	user.Data.Password = string(hashedPassword)
 
 	if err := ctrl.DB.Create(&user.Data).Error; err != nil {
 		req.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -70,6 +77,12 @@ func (ctrl *UserController) UpdateUser(req *gin.Context) {
 		})
 		return
 	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Data.Password), bcrypt.DefaultCost)
+	if err != nil {
+		req.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		return
+	}
+	user.Data.Password = string(hashedPassword)
 	if err := ctrl.DB.Save(&user.Data).Error; err != nil {
 		req.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

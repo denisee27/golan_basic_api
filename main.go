@@ -1,17 +1,18 @@
 package main
 
 import (
-	"log";
-	"github.com/gin-gonic/gin"
+	database "denis/first/config"
 	"denis/first/routes"
-	"denis/first/config"
-);
+	"log"
 
-func main(){
+	"github.com/gin-gonic/gin"
+)
+
+func main() {
 	database.ConnectDB()
 	router := gin.Default()
 	routes.SetupRoutes(router, database.DB)
 	log.Println("Server running at http://localhost:8000")
 	router.Run(":8000")
 
-}	
+}
