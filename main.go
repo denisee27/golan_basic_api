@@ -1,8 +1,8 @@
 package main
 
 import (
-	database "denis/first/config"
-	"denis/first/routes"
+	database "basic/config"
+	"basic/routes"
 	"log"
 
 	"github.com/gin-gonic/gin"

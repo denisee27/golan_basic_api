@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"denis/first/jwtKey"
-	"denis/first/models"
+	"basic/jwtKey"
+	"basic/models"
 	"fmt"
 	"net/http"
 	"os"
@@ -23,35 +23,22 @@ type LoginRequest struct {
 	Passsword string `json:"password"`
 }
 
-type payloadJwt struct {
-	Email string `json:"email"`
-	jwt.RegisteredClaims
-}
-
 func (ctrl *AuthController) Login(req *gin.Context) {
 	var loginReq LoginRequest
-
-	//Validasi & Object Parsing
 	if err := req.ShouldBindJSON(&loginReq); err != nil {
 		req.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request payload"})
 		return
 	}
-
-	//Validasi Email
 	var user models.User
 	if err := ctrl.DB.Where("email = ?", loginReq.Email).First(&user).Error; err != nil {
 		req.JSON(http.StatusUnauthorized, gin.H{"message": "User Not Found"})
 		return
 	}
-
-	//Validasi Password
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginReq.Passsword))
 	if err != nil {
 		req.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid email or password"})
 		return
 	}
-
-	//JWT Secret Key
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
 		generateKey, err := jwtKey.JwtSecretKey(req)
@@ -65,7 +52,7 @@ func (ctrl *AuthController) Login(req *gin.Context) {
 
 	// Create Token
 	expirationTime := time.Now().Add(24 * time.Hour)
-	payloadJwt := &payloadJwt{
+	payloadJwt := &jwtKey.PayloadJwt{
 		Email: user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),

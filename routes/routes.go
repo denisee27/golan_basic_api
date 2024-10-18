@@ -1,13 +1,16 @@
 package routes
 
 import (
-	"denis/first/controllers"
+	"basic/controllers"
+	"basic/middleware"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func SetupRoutes(router *gin.Engine, db *gorm.DB) {
+	router.Use(middleware.TokenValidation())
+
 	authController := &controllers.AuthController{DB: db}
 	router.POST("/auth/login", authController.Login)
 	userController := &controllers.UserController{DB: db}

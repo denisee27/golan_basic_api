@@ -9,7 +9,13 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
+
+type PayloadJwt struct {
+	Email string `json:"email"`
+	jwt.RegisteredClaims
+}
 
 func JwtSecretKey(req *gin.Context) (string, error) {
 	bytes := make([]byte, 32)

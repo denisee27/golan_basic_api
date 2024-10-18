@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"denis/first/models"
+	"basic/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

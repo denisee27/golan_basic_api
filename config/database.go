@@ -1,7 +1,7 @@
 package database
 
 import (
-	"denis/first/helpers"
+	"basic/helpers"
 	"fmt"
 
 	"gorm.io/driver/mysql"
